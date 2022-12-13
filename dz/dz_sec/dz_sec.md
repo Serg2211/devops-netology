@@ -2,16 +2,30 @@
 
 1. Установите Bitwarden плагин для браузера. Зарегестрируйтесь и сохраните несколько паролей.  
 
-Выполнено (image 1.png)  
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/1.png"
+  alt="image 1.png"
+  title="image 1.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px">
 
 2. Установите Google authenticator на мобильный телефон. Настройте вход в Bitwarden акаунт через Google authenticator OTP.  
 
-Выполнено (image 2.png)  
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/2.png"
+  alt="image 2.png"
+  title="image 2.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px"> 
 
 3. Установите apache2, сгенерируйте самоподписанный сертификат, настройте тестовый сайт для работы по HTTPS.  
 
-vagrant@vagrant:~$ sudo apt install apache2  (image 3-1.png)   
-...  
+vagrant@vagrant:~$ sudo apt install apache2   
+
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/3-1.png"
+  alt="image 3-1.png"
+  title="image 3-1.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px">
+  
 vagrant@vagrant:~$ sudo a2enmod ssl  
 Considering dependency setenvif for ssl:  
 Module setenvif already enabled  
@@ -37,7 +51,11 @@ vagrant@vagrant:~$ sudo nano /etc/apache2/sites-available/10.0.2.15.conf
    SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key  
 </VirtualHost>  
 
-(image 3-2.png)  
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/3-2.png"
+  alt="image 3-2.png"
+  title="image 3-2.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px">
 
 vagrant@vagrant:~$ sudo mkdir /var/www/10.0.2.15  
 vagrant@vagrant:~$ sudo nano /var/www/10.0.2.15/index.html  
@@ -50,7 +68,11 @@ AH00558: apache2: Could not reliably determine the server's fully qualified doma
 Syntax OK  
 vagrant@vagrant:~$ sudo systemctl reload apache2  
 
-(image 3-3.png)  
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/3-3.png"
+  alt="image 3-3.png"
+  title="image 3-3.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px"> 
 
 vagrant@vagrant:~$ curl --insecure -v https://10.0.2.15  
 *   Trying 10.0.2.15:443...  
@@ -109,7 +131,11 @@ vagrant@vagrant:~$ curl --insecure -v https://10.0.2.15
 
 4. Проверьте на TLS уязвимости произвольный сайт в интернете (кроме сайтов МВД, ФСБ, МинОбр, НацБанк, РосКосмос, РосАтом, РосНАНО и любых госкомпаний, объектов КИИ, ВПК ... и тому подобное).  
 
-(image 4.png)  
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/4.png"
+  alt="image 4.png"
+  title="image 4.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px">  
 
 vagrant@vagrant:~/testssl.sh$ ./testssl.sh -U --sneaky https://tyumen.leroymerlin.ru/  
 
@@ -165,7 +191,11 @@ vagrant@vagrant:~/testssl.sh$ ./testssl.sh -U --sneaky https://tyumen.leroymerli
 
 5. Установите на Ubuntu ssh сервер, сгенерируйте новый приватный ключ. Скопируйте свой публичный ключ на другой сервер. Подключитесь к серверу по SSH-ключу.  
 
-(image 5-1.png)  
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/5-1.png"
+  alt="image 5-1.png"
+  title="image 5-1.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px"> 
 
 vagrant@vagrant:~$ systemctl status sshd.service  
 ? ssh.service - OpenBSD Secure Shell server  
@@ -212,10 +242,22 @@ The key's randomart image is:
 |     ...         |  
 +----[SHA256]-----+  
 
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/5-2.png"
+  alt="image 5-2.png"
+  title="image 5-2.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px">
+
 vagrant@vagrant:~$ ssh-copy-id vagrant@10.0.2.200  
 vagrant@vagrant:~$ ssh vagrant@10.0.2.200  
 
-6. Переименуйте файлы ключей из задания 5.    (image 6.png)  
+6. Переименуйте файлы ключей из задания 5.    
+
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/6.png"
+  alt="image 6.png"
+  title="image 6.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px">  
 
 vagrant@vagrant:~$ sudo mv ~/.ssh/id_rsa ~/.ssh/new_rsa  
 vagrant@vagrant:~$ sudo nano ~/.ssh/config  
@@ -227,7 +269,13 @@ Host vagrant_fs
      User vagrant  
      IdentityFile ~/.ssh/new_rsa  
 
-7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.  (image 7.png)  
+7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.  
+
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_sec/images/7.png"
+  alt="image 7.png"
+  title="image 7.png"
+  style="display: inline-block; margin: 0 auto; max-width: 800px">  
 
 vagrant@vagrant:~$ sudo tcpdump -c 100 -w 100.pcap -i eth0  
 tcpdump: listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes  
