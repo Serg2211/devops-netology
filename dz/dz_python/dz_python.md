@@ -17,7 +17,7 @@ c = a + b
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/1-1.png"
   alt="image 1-1.png"
   title="image 1-1.png"
-  style="display: inline-block; margin: 0 auto; width: 200px">
+  style="display: inline-block; margin: 0 auto; width: 300px">
 
 Как получить для переменной c значение 12?	Сменить тип переменной a на str, тогда puthon склеит две переменные.  
 
@@ -25,7 +25,7 @@ c = a + b
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/1-2.png"
   alt="image 1-2.png"
   title="image 1-2.png"
-  style="display: inline-block; margin: 0 auto; width: 200px">
+  style="display: inline-block; margin: 0 auto; width: 300px">
 
 Как получить для переменной c значение 3?	Сменить тип переменной b на int, тогда получим арифметическую операцию сложение.  
 
@@ -33,7 +33,7 @@ c = a + b
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/1-3.png"
   alt="image 1-3.png"
   title="image 1-3.png"
-  style="display: inline-block; margin: 0 auto; width: 200px">
+  style="display: inline-block; margin: 0 auto; width: 300px">
 
 2. Задание 2
 Мы устроились на работу в компанию, где раньше уже был DevOps Engineer. Он написал скрипт, позволяющий узнать, какие файлы модифицированы в репозитории, относительно локальных изменений. Этим скриптом недовольно начальство, потому что в его выводе есть не все изменённые файлы, а также непонятен полный путь к директории, где они находятся.  
@@ -57,7 +57,7 @@ for result in result_os.split('\n'):
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/2-1.png"
   alt="image 2-1.png"
   title="image 2-1.png"
-  style="display: inline-block; margin: 0 auto; width: 200px">
+  style="display: inline-block; margin: 0 auto; width: 300px">
 
 Ваш скрипт:  
 
@@ -77,7 +77,7 @@ for result in result_os.split('\n'):
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/2-2.png"
   alt="image 2-2.png"
   title="image 2-2.png"
-  style="display: inline-block; margin: 0 auto; width: 200px">
+  style="display: inline-block; margin: 0 auto; width: 300px">
 
 3. Доработать скрипт выше так, чтобы он не только мог проверять локальный репозиторий в текущей директории, но и умел воспринимать путь к репозиторию, который мы передаём как входной параметр. Мы точно знаем, что начальство коварное и будет проверять работу этого скрипта в директориях, которые не являются локальными репозиториями.  
 
@@ -113,7 +113,7 @@ dz/new.txt
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/3.png"
   alt="image 3.png"
   title="image 3.png"
-  style="display: inline-block; margin: 0 auto; width: 200px">
+  style="display: inline-block; margin: 0 auto; width: 300px">
 
 4. Задание 4
 Наша команда разрабатывает несколько веб-сервисов, доступных по http. Мы точно знаем, что на их стенде нет никакой балансировки, кластеризации, за DNS прячется конкретный IP сервера, где установлен сервис.  
@@ -147,9 +147,7 @@ while True:
         if new_ip != ip:  
             sites[site] = new_ip  
             print(f'[ERROR] {site} IP mismatch: {ip} {new_ip}')  
-
         print(f'{site} IP: {new_ip}')  
-
     time.sleep(0.1)  
 
 Вывод скрипта при запуске при тестировании:  
@@ -158,4 +156,4 @@ while True:
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/4.png"
   alt="image 4.png"
   title="image 4.png"
-  style="display: inline-block; margin: 0 auto; width: 200px">
+  style="display: inline-block; margin: 0 auto; width: 300px">
