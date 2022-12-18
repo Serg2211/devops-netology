@@ -64,7 +64,6 @@ while True:
         if new_ip != ip:  
             sites[site] = new_ip  
             print(f'[ERROR] {site} IP mismatch: {ip} {new_ip}')  
-
             with open("C:\Python\ip.json", "w") as fp_json:  
                 json.dump(sites, fp_json, indent=2)  
             with open("C:\Python\ip.yaml", "w") as fp_yaml:  
