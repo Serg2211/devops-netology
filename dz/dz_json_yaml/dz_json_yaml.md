@@ -2,6 +2,7 @@
 
 1. Мы выгрузили JSON, который получили через API запрос к нашему сервису:  
 
+```
 { "info" : "Sample JSON output from our service\t",  
     "elements" :[  
         { "name" : "first",  
@@ -14,9 +15,11 @@
         }  
     ]  
 }  
+```
 
 Нужно найти и исправить все ошибки, которые допускает наш сервис:
 
+```
 {  
     "info": "Sample JSON output from our service\t",  
     "elements": [  
@@ -32,6 +35,7 @@
       }  
     ]  
 }  
+```
 
 <img
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_json_yaml/images/1.png"
@@ -41,6 +45,7 @@
 
 2. В прошлый рабочий день мы создавали скрипт, позволяющий опрашивать веб-сервисы и получать их IP. К уже реализованному функционалу нам нужно добавить возможность записи JSON и YAML файлов, описывающих наши сервисы. Если в момент исполнения скрипта меняется IP у сервиса - он должен так же поменяться в yml и json файле.  
 
+```
 import socket  
 import json  
 import yaml  
@@ -70,6 +75,7 @@ while True:
                 yaml.dump(sites, fp_yaml, explicit_start=True, explicit_end=True)  
         print(f'{site} IP: {new_ip}')  
     time.sleep(0.1)  
+```
 
 <img
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_json_yaml/images/2-1.png"
