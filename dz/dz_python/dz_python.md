@@ -40,6 +40,7 @@ c = a + b
 
 Как можно доработать скрипт ниже, чтобы он исполнял требования вашего руководителя?  
 
+```
 #!/usr/bin/env python3  
 
 import os  
@@ -52,6 +53,7 @@ for result in result_os.split('\n'):
         prepare_result = result.replace('\tmodified:   ', '')  
         print(prepare_result)  
         break  
+```
 
 <img
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/2-1.png"
@@ -61,6 +63,7 @@ for result in result_os.split('\n'):
 
 Ваш скрипт:  
 
+```
 #!/usr/bin/env python3  
 
 import os  
@@ -72,6 +75,7 @@ for result in result_os.split('\n'):
         prepare_result = result.replace('\tmodified:   ', '')  
         print(prepare_result)  
         break  
+```
 
 <img
   src="https://github.com/Serg2211/devops-netology/blob/main/dz/dz_python/images/2-2.png"
@@ -83,6 +87,7 @@ for result in result_os.split('\n'):
 
 Ваш скрипт:  
 
+```
 #!/usr/bin/env python3  
 
 import os  
@@ -96,6 +101,7 @@ for result in result_os.split('\n'):
         print("Файлы modified:")  
         print(prepare_result)  
         break  
+```
 
 Вывод скрипта при запуске при тестировании:  
 
@@ -131,6 +137,7 @@ dz/new.txt
 
 #!/usr/bin/env python3  
 
+```
 import socket  
 import time   
 
@@ -149,6 +156,7 @@ while True:
             print(f'[ERROR] {site} IP mismatch: {ip} {new_ip}')  
         print(f'{site} IP: {new_ip}')  
     time.sleep(0.1)  
+```
 
 Вывод скрипта при запуске при тестировании:  
 
