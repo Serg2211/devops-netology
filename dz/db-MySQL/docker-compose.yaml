@@ -1,0 +1,20 @@
+version: '3.9'
+
+volumes:
+  data: {}
+  backup: {}
+
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: mysql8
+    ports:
+      - "0.0.0.0:3306:3306"
+    volumes:
+      - data:/var/lib/mysql
+      - backup:/media/mysql/backup
+    environment:
+      MYSQL_ROOT_PASSWORD: "mysql"
+      MYSQL_DATABASE: "test_db"
+    restart: always
