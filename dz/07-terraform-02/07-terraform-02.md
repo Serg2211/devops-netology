@@ -131,7 +131,7 @@ sergo@ubuntu-pc:~/7.2/src$
 - скриншот ЛК Yandex Cloud с созданной ВМ,
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/07-terraform-02/images/1.png"
+  src="https://github.com/Serg2211/devops-netology/blob/terraform-02/dz/07-terraform-02/images/1.png"
   alt="image 1.png"
   title="image 1.png"
   style="display: inline-block; margin: 0 auto; width: 300px">
@@ -446,7 +446,7 @@ sergo@ubuntu-pc:~/7.2/src$
 ```
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/07-terraform-02/images/2.png"
+  src="https://github.com/Serg2211/devops-netology/blob/terraform-02/dz/07-terraform-02/images/2.png"
   alt="image 2.png"
   title="image 2.png"
   style="display: inline-block; margin: 0 auto; width: 300px">
