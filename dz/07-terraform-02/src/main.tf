@@ -12,7 +12,7 @@ data "yandex_compute_image" "ubuntu" {
   family = var.vm_web_os
 }
 resource "yandex_compute_instance" "platform" {
-  name        = local.vm_web_resource_name
+  name        = "netology–${ local.env }–${ local.project }–${ local.role1 }"
   platform_id = var.vm_web_resource_platform_id
   resources {
     cores         = "${var.vm_web_resources["cores"]}"

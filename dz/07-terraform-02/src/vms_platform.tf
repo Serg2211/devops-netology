@@ -4,11 +4,6 @@ variable "vm_db_os" {
   default     = "ubuntu-2004-lts"
   description = "OS"
 }
-variable "vm_db_resource_name" {
-  type        = string
-  default     = "netology-develop-platform-db"
-  description = "Resource name"
-}
 variable "vm_db_resource_platform_id" {
   type        = string
   default     = "standard-v1"

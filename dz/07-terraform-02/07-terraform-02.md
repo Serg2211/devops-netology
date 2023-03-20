@@ -532,11 +532,27 @@ sergo@ubuntu-pc:~/7.2/src$
 
 1. В файле locals.tf опишите в **одном** local-блоке имя каждой ВМ, используйте интерполяцию по примеру из лекции.
 
+Файл locals.tf:
+
 ```bash
 locals {
-  vm_web_resource_name = "netology-develop-platform-web"
-  vm_db_resource_name = "netology-develop-platform-db"
+  env = "develop"
+  project = "platform"
+  role1 = "web"
+  role2 = "db"
 }
+```
+Файл main.tf:
+```bash
+...
+resource "yandex_compute_instance" "platform" {
+  name        = "netology–${ local.env }–${ local.project }–${ local.role1 }"
+  ...
+```
+Файл vms_platform.tf:
+```bash
+resource "yandex_compute_instance" "vm_db_platform" {
+  name        = "netology–${ local.env }–${ local.project }–${ local.role2 }"
 ```
 
 2. Замените переменные с именами ВМ из файла variables.tf на созданные вами local переменные.
