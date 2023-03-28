@@ -32,3 +32,41 @@
 #     }
 # }
 # }
+
+
+# data "yandex_compute_instance" "dev" {
+#   depends_on = [yandex_compute_instance.dev]
+#   for_each     = {
+#     for i,vm in yandex_compute_instance.dev[*]:
+#     vm.name => vm
+#   }
+#   name = "${each.value.name}"
+# }
+# data "yandex_compute_instance" "web" {
+#   depends_on = [yandex_compute_instance.web]
+#   for_each     = {
+#     for i,vm in yandex_compute_instance.web[*]:
+#     vm.name  => vm
+#   }
+#   name = "${each.value.name}"
+# }
+# data "yandex_compute_instance" "test" {
+#   depends_on = [yandex_compute_instance.test]
+#   for_each     = {
+#     for i,vm in yandex_compute_instance.test[*]:
+#     vm.name  => vm
+#   }
+#   name = "${each.value.name}"
+# }
+
+# output "dev" {
+#   value =  [ for name in data.yandex_compute_instance.dev : ["name  = ${name.name}", "id = ${name.id}", "fqdn = ${name.fqdn}", "public_ip = ${name.network_interface[*].nat_ip_address}"]]
+# }
+
+# output "web" {
+#   value = [for name in data.yandex_compute_instance.web : ["name  = ${name.name}", "id = ${name.id}", "fqdn = ${name.fqdn}", "public_ip = ${name.network_interface[*].nat_ip_address}"]]
+# }
+
+# output "test" {
+#   value = [for name in data.yandex_compute_instance.test :  ["name  = ${name.name}", "id = ${name.id}", "fqdn = ${name.fqdn}", "public_ip = ${name.network_interface[*].nat_ip_address}"]]
+# }

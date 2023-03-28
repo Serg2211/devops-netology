@@ -10,14 +10,14 @@
   src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/1.png"
   alt="image 1.png"
   title="image 1.png"
-  style="display: inline-block; margin: 0 auto; width: 400px">
+  style="display: inline-block; margin: 0 auto; width: 600px">
 
 
 <img
   src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/2.png"
   alt="image 2.png"
   title="image 2.png"
-  style="display: inline-block; margin: 0 auto; width: 400px">
+  style="display: inline-block; margin: 0 auto; width: 600px">
 
 ------
 
@@ -60,7 +60,7 @@ platform_id = "standard-v1"
   src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/3.png"
   alt="image 3.png"
   title="image 3.png"
-  style="display: inline-block; margin: 0 auto; width: 400px">
+  style="display: inline-block; margin: 0 auto; width: 600px">
 
 2. Создайте файл for_each-vm.tf. Опишите в нем создание 2 **разных** по cpu/ram/disk виртуальных машин, используя мета-аргумент **for_each loop**. Используйте переменную типа list(object({ vm_name=string, cpu=number, ram=number, disk=number  })). При желании внесите в переменную все возможные параметры.
 
@@ -128,7 +128,7 @@ resource "yandex_compute_instance" "web" {
   src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/4.png"
   alt="image 4.png"
   title="image 4.png"
-  style="display: inline-block; margin: 0 auto; width: 400px">
+  style="display: inline-block; margin: 0 auto; width: 600px">
 
 3. ВМ из пункта 2.2 должны создаваться после создания ВМ из пункта 2.1.
 
@@ -212,7 +212,7 @@ sergo@ubuntu-pc:~/7.3/src$
   src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/5.png"
   alt="image 5.png"
   title="image 5.png"
-  style="display: inline-block; margin: 0 auto; width: 400px">
+  style="display: inline-block; margin: 0 auto; width: 600px">
 
 ------
 
@@ -232,35 +232,34 @@ resource "yandex_compute_disk" "default" {
 
 2. Создайте одну **любую** ВМ. Используйте блок **dynamic secondary_disk{..}** и мета-аргумент for_each для подключения созданных вами дополнительных дисков.
 
-Пробовал разными путями, но так и не смог сделать через **dynamic secondary_disk{..}**, подключил явно указав (прошу дать развернутое объяснение, можно с примером):
+Разобрался!
 
 ```bash
-  secondary_disk {
-    disk_id = resource.yandex_compute_disk.disk[0].id
-  }
-  secondary_disk {
-    disk_id = resource.yandex_compute_disk.disk[1].id
-  }
-  secondary_disk {
-    disk_id = resource.yandex_compute_disk.disk[2].id
-  }
+  dynamic secondary_disk {
+    for_each = "${yandex_compute_disk.disk.*.id}"
+
+    content {
+      disk_id = yandex_compute_disk.disk["${secondary_disk.key}"].id
+      auto_delete = true
+    }
 ```
 
 <img
   src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/6.png"
   alt="image 6.png"
   title="image 6.png"
-  style="display: inline-block; margin: 0 auto; width: 400px">
+  style="display: inline-block; margin: 0 auto; width: 600px">
 
 
 3. Назначьте ВМ созданную в 1-м задании группу безопасности.
 
-Как назначить группу безопасности? Просто указать ту же сеть? Если да, то у всех ВМ указана сеть **develop**, на которой настроена группа безопасности **example_dynamic**
+Сделано
 
 ```bash
   network_interface {
     subnet_id = yandex_vpc_subnet.develop.id
     nat       = true
+    security_group_ids = [yandex_vpc_security_group.example.id]
   }
 ```
 
@@ -273,51 +272,60 @@ resource "yandex_compute_disk" "default" {
 Готовый код возьмите из демонстрации к лекции [**demonstration2**](https://github.com/netology-code/ter-homeworks/tree/main/demonstration2).
 Передайте в него в качестве переменных имена и внешние ip-адреса ВМ из задания 2.1 и 2.2.
 
-Знаю, что не правильно, т.к. ниже получил ошибку
+Разобрался! Спасибо за комментарий!
 
 ```bash
 resource "local_file" "hosts_cfg" {
+  depends_on = [resource.yandex_compute_instance.dev, resource.yandex_compute_instance.web, resource.yandex_compute_instance.test ]
   content = templatefile("${path.module}/hosts.tftpl",
 
-    {
-    webservers =  yandex_compute_instance.dev[0].network_interface[0].nat_ip_address
-    webservers =  yandex_compute_instance.dev[1].network_interface[0].nat_ip_address
-    webservers =  yandex_compute_instance.web[0].network_interface[0].nat_ip_address
-    webservers =  yandex_compute_instance.web[1].network_interface[0].nat_ip_address
-        }  )
+    { webservers =  yandex_compute_instance.web,
+      dev = yandex_compute_instance.dev,
+      test = [yandex_compute_instance.test]
+    }
 
+  )
   filename = "${abspath(path.module)}/hosts.cfg"
 }
+```
+hosts.tftpl
+
+```bash
+[servers]
+
+%{~ for i in webservers }
+${i["name"]}   ansible_host=${i["network_interface"][0]["nat_ip_address"]}
+%{ endfor ~}
+
+%{~ for i in dev }
+${i["name"]}   ansible_host=${i["network_interface"][0]["nat_ip_address"]}
+%{ endfor ~}
+
+%{~ for i in test }
+${i["name"]}   ansible_host=${i["network_interface"][0]["nat_ip_address"]}
+%{ endfor ~}
 ```
 
 2. Выполните код. Приложите скриншот получившегося файла.
 
-Получил ошибку, хотя ip  получены, но я так понял в файл они не сохранены... Строковое значение не может использоваться в словаре с циклом for... Могу сказать только одно - map, list, циклы и т.п. мне после этого занятия совсем не понятны.
-
 ```bash
-│ Error: Error in function call
-│ 
-│   on main.tf line 56, in resource "local_file" "hosts_cfg":
-│   56:   content = templatefile("${path.module}/hosts.tftpl",
-│   57:     {
-│   58:     webservers =  yandex_compute_instance.dev[0].network_interface[0].nat_ip_address
-│   59:     webservers =  yandex_compute_instance.dev[1].network_interface[0].nat_ip_address
-│   60:     webservers =  yandex_compute_instance.web[0].network_interface[0].nat_ip_address
-│   61:     webservers =  yandex_compute_instance.web[1].network_interface[0].nat_ip_address
-│   62:         }  )
-│     ├────────────────
-│     │ while calling templatefile(path, vars)
-│     │ path.module is "."
-│     │ yandex_compute_instance.dev[0].network_interface[0].nat_ip_address is "158.160.37.190"
-│     │ yandex_compute_instance.dev[1].network_interface[0].nat_ip_address is "51.250.79.66"
-│     │ yandex_compute_instance.web[0].network_interface[0].nat_ip_address is "158.160.46.120"
-│     │ yandex_compute_instance.web[1].network_interface[0].nat_ip_address is "84.201.158.41"
-│ 
-│ Call to function "templatefile" failed: ./hosts.tftpl:3,14-24: Iteration over non-iterable value; A value of type string cannot be used as the collection in a 'for' expression..
-╵
-sergo@ubuntu-pc:~/7.3/src$ 
+local_file.hosts_cfg: Creating...
+local_file.hosts_cfg: Creation complete after 0s [id=cdbe08ace2494b5849bbdd0a7b17fc03f922529d]
 
+Apply complete! Resources: 12 added, 0 changed, 0 destroyed.
+sergo@ubuntu-pc:~/7.3/src$ 
 ```
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/7.png"
+  alt="image 7.png"
+  title="image 7.png"
+  style="display: inline-block; margin: 0 auto; width: 600px">
+
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/8.png"
+  alt="image 8.png"
+  title="image 8.png"
+  style="display: inline-block; margin: 0 auto; width: 600px">
 
 
 Для общего зачета создайте в вашем GitHub репозитории новую ветку terraform-03. Закомитьте в эту ветку свой финальный код проекта, пришлите ссылку на коммит.   
