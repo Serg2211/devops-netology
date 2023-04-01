@@ -1,11 +1,5 @@
 # Домашнее задание к занятию 7.4 «Продвинутые методы работы с Terraform»  
 
-<img
-  src="https://github.com/Serg2211/devops-netology/blob/terraform-03/dz/07-terraform-03/images/1.png"
-  alt="image 1.png"
-  title="image 1.png"
-  style="display: inline-block; margin: 0 auto; width: 400px">
-
 ### Задание 1
 
 1. Возьмите из [демонстрации к лекции готовый код](https://github.com/netology-code/ter-homeworks/tree/main/04/demonstration1) для создания ВМ с помощью remote модуля.
