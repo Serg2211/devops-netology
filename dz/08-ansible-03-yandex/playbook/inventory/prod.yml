@@ -1,0 +1,18 @@
+---
+clickhouse:
+  hosts:
+    clickhouse-01:
+      ansible_host: 51.250.73.117
+      ansible_user: sergo
+
+vector:
+  hosts:
+    vector-01:
+      ansible_host: 158.160.56.253
+      ansible_user: sergo
+
+lighthouse:
+  hosts:
+    lighthouse-01:
+      ansible_host: 158.160.47.83
+      ansible_user: sergo
