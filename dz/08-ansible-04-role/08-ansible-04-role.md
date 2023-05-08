@@ -118,7 +118,7 @@ nginx.conf.j2
 **Итог**
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/terraform-04/dz/08-ansible-03-yandex/images/1.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/08-ansible-04-role/images/1.png"
   alt="image 1.png"
   title="image 1.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
@@ -356,7 +356,7 @@ sergo@ubuntu-pc:~/8.4/playbook$
 
 10. Выложите playbook в репозиторий.
 
-[playbook](https://github.com/Serg2211/vector-role)
+[playbook](https://github.com/Serg2211/devops-netology/tree/main/dz/08-ansible-04-role/playbook)
 
 11. В ответе дайте ссылки на оба репозитория с roles и одну ссылку на репозиторий с playbook.
 
