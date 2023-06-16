@@ -1,0 +1,9 @@
+version: "3"
+services:
+  teamcity-agent:
+    restart: always
+    image: jetbrains/teamcity-agent 
+    volumes:
+      - ~/teamcity/agent/:/data/teamcity_agent/conf 
+    environment:
+      SERVER_URL: "http://84.201.157.247:8111"

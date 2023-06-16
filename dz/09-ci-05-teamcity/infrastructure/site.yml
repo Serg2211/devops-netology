@@ -1,0 +1,294 @@
+---
+- hosts: teamcity
+  become: yes
+  gather_facts: false
+  tasks:
+  - name: Install docker packages
+    apt:
+      state: present
+      update_cache: yes
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - mc
+        - htop
+    tags:
+      - docker
+  - name: Add Docker s official GPG key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+    tags:
+      - docker
+  - name: Verify that we have the key with the fingerprint
+    apt_key:
+      id: 0EBFCD88
+      state: present
+    tags:
+      - docker
+  - name: Set up the stable repository
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+      state: present
+      update_cache: yes
+    tags:
+      - docker
+  - name: Update apt packages
+    apt:
+      update_cache: yes
+    tags:
+      - docker
+  - name: Install docker
+    apt:
+      name: docker-ce
+      state: present
+      update_cache: yes
+    #notify: Start docker on boot
+    tags:
+      - docker
+  - name: Add remote "sergo" user to "docker" group
+    user:
+      name: "sergo"
+      group: "docker"
+      append: yes
+    tags:
+      - docker
+  - name: Install docker-compose
+    get_url: 
+      url : https://github.com/docker/compose/releases/download/1.25.1-rc1/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: 'u+x,g+x'
+  - name: some commands
+    ansible.builtin.shell: sudo chgrp docker /usr/local/bin/docker-compose
+    become: true
+
+- hosts: teamcity-server
+  become: true
+  gather_facts: false
+  tasks:
+  - name: Create Directories on server
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: 1000
+      group: 1000
+      mode: 0755
+    loop:
+      - '/home/sergo/teamcity/data'
+      - '/home/sergo/teamcity/logs'
+  - name: Copy and up docker-compose-server.yml
+    become: true
+    template:
+      dest: /home/sergo/docker-compose.yml
+      owner: sergo
+      group: docker
+      mode: 0755
+      src: docker-compose-server.yml
+  - name: Docker-compose up
+    command: docker-compose up -d
+    become: true
+    become_method: su
+    become_user: sergo
+
+- hosts: teamcity-agent
+  become: true
+  gather_facts: false
+  tasks:
+  - name: Create Directories on agent
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: sergo
+      group: docker
+      mode: 0755
+    loop:
+      - '/home/sergo/teamcity/agent'
+  - name: Copy docker-compose-agent.yml
+    become: true
+    template:
+      dest: /home/sergo/docker-compose.yml
+      owner: 1000
+      group: 1000
+      mode: 0755
+      src: docker-compose-agent.yml
+  - name: Docker-compose up
+    command: docker-compose up -d
+    become: true
+    become_method: su
+    become_user: sergo
+
+
+- name: Get Nexus installed
+  hosts: nexus
+  pre_tasks:
+    - name: Create Nexus group
+      become: true
+      group:
+        name: "{{ nexus_user_group }}"
+        state: present
+    - name: Create Nexus user
+      become: true
+      user:
+        name: "{{ nexus_user_name }}"
+    - name: Install JDK
+      become: true
+      package:
+        update_cache: yes
+        name: [openjdk-8-jre, openjdk-8-jdk]
+        state: present
+  tasks:
+    - name: Create Nexus directories
+      become: true
+      file:
+        group: "{{ nexus_user_group }}"
+        owner: "{{ nexus_user_name }}"
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ nexus_directory_log }}"
+        - "{{ nexus_directory_data }}"
+        - "{{ nexus_directory_data }}/etc"
+        - "{{ nexus_directory_package }}"
+        - "{{ nexus_directory_tmp }}"
+
+    - name: Install some packages
+      become: yes
+      apt:
+        state: present
+        update_cache: yes
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - mc
+          - htop
+          - acl
+
+    - name: Download Nexus
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      get_url:
+        dest: "{{ nexus_directory_package }}/nexus-{{ nexus_version }}.tar.gz"
+        url: "{{ nexus_download_url }}/nexus-{{ nexus_version }}-unix.tar.gz"
+
+    - name: Unpack Nexus
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      unarchive:
+        copy: no
+        creates: "{{ nexus_directory_package }}/nexus-{{ nexus_version }}"
+        dest: "{{ nexus_directory_package }}"
+        src: "{{ nexus_directory_package }}/nexus-{{ nexus_version }}.tar.gz"
+
+    - name: Link to Nexus Directory
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      file:
+        dest: "{{ nexus_directory_home }}"
+        src: "{{ nexus_directory_package }}/nexus-{{ nexus_version }}"
+        state: link
+
+    - name: Add NEXUS_HOME for Nexus user
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      lineinfile:
+        create: yes
+        dest: "/home/{{ nexus_user_name }}/.bashrc"
+        insertafter: EOF
+        line: "export NEXUS_HOME={{ nexus_directory_home }}"
+
+    - name: Add run_as_user to Nexus.rc
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      lineinfile:
+        create: yes
+        dest: "{{ nexus_directory_home }}/bin/nexus.rc"
+        insertafter: EOF
+        line: "run_as_user=\"{{ nexus_user_name }}\""
+        regexp: "^run_as_user"
+
+    - name: Raise nofile limit for Nexus user
+      become: true
+      pam_limits:
+        domain: "{{ nexus_user_name }}"
+        limit_type: "-"
+        limit_item: nofile
+        value: "{{ nexus_ulimit }}"
+
+    - name: Create Nexus service for SystemD
+      become: true
+      template:
+        dest: /lib/systemd/system/nexus.service
+        mode: 0644
+        src: nexus.systemd.j2
+
+    - name: Ensure Nexus service is enabled for SystemD
+      become: true
+      systemd:
+        daemon_reload: yes
+        enabled: yes
+        name: nexus
+      when:
+        - nexus_service_enabled
+
+    - name: Create Nexus vmoptions
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      template:
+        dest: "{{ nexus_directory_home }}/bin/nexus.vmoptions"
+        src: nexus.vmoptions.j2
+      register: nexus_config_changed
+
+    - name: Create Nexus properties
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      template:
+        dest: "{{ nexus_directory_data }}/etc/nexus.properties"
+        src: nexus.properties.j2
+      register: nexus_config_changed
+
+    - name: Lower Nexus disk space threshold
+      become: true
+      become_user: "{{ nexus_user_name }}"
+      lineinfile:
+        backrefs: yes
+        dest: "{{ nexus_directory_home }}/etc/karaf/system.properties"
+        insertafter: EOF
+        line: "storage.diskCache.diskFreeSpaceLimit={{ nexus_configuration_disk_free_space_limit }}"
+        regexp: ^storage\.diskCache\.diskFreeSpaceLimit
+      when: nexus_configuration_disk_free_space_limit is not none
+      register: nexus_config_changed
+
+    - name: Start Nexus service if enabled
+      become: true
+      service:
+        enabled: yes
+        name: nexus
+        state: started
+      when:
+        - nexus_service_start_on_boot
+        - not nexus_config_changed.changed
+      tags:
+        - skip_ansible_lint
+
+    - name: Ensure Nexus service is restarted
+      become: true
+      service:
+        name: nexus
+        state: restarted
+      when:
+        - nexus_service_start_on_boot
+        - nexus_config_changed.changed
+      tags:
+        - skip_ansible_lint
+
+    - name: Wait for Nexus port if started
+      wait_for:
+        port: "{{ nexus_port }}"
+        state: started
+        timeout: "{{ nexus_port_check_timeout }}"
+      when:
+        - nexus_service_start_on_boot
