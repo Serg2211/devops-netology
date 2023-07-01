@@ -7,7 +7,7 @@
 4. Проект должен быть публичным, остальные настройки по желанию.
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/images/1.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/images/1.png"
   alt="image 1.png"
   title="image 1.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
@@ -27,14 +27,14 @@
 6. Точка вызова: запуск скрипта.
 7. При комите в любую ветку должен собираться docker image с форматом имени hello:gitlab-$CI_COMMIT_SHORT_SHA . Образ должен быть выложен в Gitlab registry или yandex registry.   
 
-[Dockerfile](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/repository/Dockerfile)
+[Dockerfile](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/repository/Dockerfile)
 
-[gitlab-ci.yml](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/repository/gitlab-ci.yml)
+[gitlab-ci.yml](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/repository/gitlab-ci.yml)
 
-[requirements.txt](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/repository/requirements.txt)
+[requirements.txt](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/repository/requirements.txt)
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/images/2.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/images/2.png"
   alt="image 2.png"
   title="image 2.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
@@ -48,7 +48,7 @@
 3. Issue поставить label: feature.
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/images/3.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/images/3.png"
   alt="image 3.png"
   title="image 3.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
@@ -60,10 +60,10 @@
 1. Создать отдельную ветку, связанную с этим Issue.
 2. Внести изменения по тексту из задания.
 
-[python-api.py](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/repository/python-api.py)
+[python-api.py](https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/repository/python-api.py)
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/images/4.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/images/4.png"
   alt="image 4.png"
   title="image 4.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
@@ -71,13 +71,13 @@
 3. Подготовить Merge Request, влить необходимые изменения в `master`, проверить, что сборка прошла успешно.
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/images/5.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/images/5.png"
   alt="image 5.png"
   title="image 5.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/images/6.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/images/6.png"
   alt="image 6.png"
   title="image 6.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
@@ -103,7 +103,7 @@
 2. Закрыть Issue с комментарием об успешности прохождения, указав желаемый результат и фактически достигнутый.
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab09-ci-06-gitlab/images/7.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/09-ci-06-gitlab/images/7.png"
   alt="image 7.png"
   title="image 7.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
