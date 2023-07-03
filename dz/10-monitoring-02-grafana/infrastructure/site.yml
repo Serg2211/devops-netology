@@ -1,0 +1,134 @@
+---
+# tasks file for deploy soft to all VM
+- hosts: all
+  become: yes
+  gather_facts: false
+  tasks:
+  - name: Install soft to all VM
+    apt:
+      state: present
+      update_cache: yes
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - mc
+        - htop
+        - wget
+        - nano
+        - adduser
+        - libfontconfig1
+
+# tasks file for deploy grafana
+- hosts: server
+  become: yes
+  gather_facts: false
+  tasks:
+  - name: download Grafana
+    shell:
+      wget https://dl.grafana.com/oss/release/grafana_10.0.1_amd64.deb
+    register: download_grafana
+
+  - name: install Grafana
+    shell:
+      dpkg -i grafana_10.0.1_amd64.deb
+    when: download_grafana
+
+  - name: Start the grafana-server service
+    shell: |
+      systemctl enable grafana-server
+      systemctl daemon-reload
+      systemctl start grafana-server
+
+# tasks file for deploy node_exporter
+- hosts: metrics
+  become: yes
+  gather_facts: false
+  tasks:
+
+  - name: Download Node Exporter
+    shell: |
+      wget https://github.com/prometheus/node_exporter/releases/download/v1.6.0/node_exporter-1.6.0.linux-amd64.tar.gz
+    register: download_node_exporter
+
+  - name: Extract Node Exporter
+    shell: |
+      tar xvf node_exporter-1.6.0.linux-amd64.tar.gz
+      cd node_exporter-1.6.0.linux-amd64
+      cp node_exporter /usr/local/bin
+      cd ..
+      rm -rf ./node_exporter-1.6.0.linux-amd64
+    when: download_node_exporter is changed
+
+  - name: Create Node Exporter User
+    shell: |
+      useradd --no-create-home --shell /bin/false node_exporter
+      chown node_exporter:node_exporter /usr/local/bin/node_exporter
+
+  - name: Create the Node Exporter service
+    become: true
+    template:
+      dest: /etc/systemd/system/node_exporter.service
+      mode: 0644
+      src: node_exporter.service
+  
+  - name: Start the Node Exporter service
+    shell: |
+      systemctl enable grafana-server
+      systemctl daemon-reload
+      systemctl start node_exporter
+
+# tasks file for deploy Prometheus
+- hosts: server
+  become: yes
+  gather_facts: false
+  tasks:
+
+  - name: Create Prometheus system group
+    shell: |
+      groupadd --system prometheus
+      useradd -s /sbin/nologin --system -g prometheus prometheus
+    register: download_node_exporter
+
+  - name: Create data & configs directories
+    shell: |
+      mkdir /var/lib/prometheus
+      for i in rules rules.d files_sd; do sudo mkdir -p /etc/prometheus/${i}; done
+    when: download_node_exporter is changed
+
+  - name: Download Prometheus files
+    shell: |
+      apt update
+      mkdir -p /tmp/prometheus && cd /tmp/prometheus
+      curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | wget -qi -
+      tar xvf prometheus*.tar.gz
+      cd prometheus*/
+      mv prometheus promtool /usr/local/bin/
+      mv consoles/ console_libraries/ /etc/prometheus/
+
+  - name: Create Prometheus configuration template
+    become: true
+    template:
+      dest: /etc/prometheus/prometheus.yml
+      mode: 0755
+      src: prometheus.yml
+
+  - name: Change directory permissions
+    shell: |
+      for i in rules rules.d files_sd; do sudo chown -R prometheus:prometheus /etc/prometheus/${i}; done
+      for i in rules rules.d files_sd; do sudo chmod -R 775 /etc/prometheus/${i}; done
+      sudo chown -R prometheus:prometheus /var/lib/prometheus/
+
+  - name: Create the Prometheus service
+    become: true
+    template:
+      dest: /etc/systemd/system/prometheus.service
+      mode: 0644
+      src: prometheus.service
+  
+  - name: Start the Prometheus service
+    shell: |
+      systemctl enable prometheus
+      systemctl daemon-reload
+      systemctl start prometheus
