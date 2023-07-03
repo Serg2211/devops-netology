@@ -33,7 +33,7 @@ sergo@ubuntu-pc:~/10.2/src$
   style="display: inline-block; margin: 0 auto; max-width: 600px">
 
 
-Передал в ansible конфиг [prometheus.yml](https://github.com/Serg2211/devops-netology/blob/main/dz/10-monitoring-02-grafana/infrastructure/site.yml):
+Передал в ansible конфиг [prometheus.yml](https://github.com/Serg2211/devops-netology/blob/main/dz/10-monitoring-02-grafana/infrastructure/templates/prometheus.yml):
 
 ```yml
 global:
@@ -55,7 +55,7 @@ scrape_configs:
       - targets: ['158.160.109.16:9100']
 ```
 
-Через [ansible](https://valyala.medium.com/promql-tutorial-for-beginners-9ab455142085) установил на grafana-server: Grafana и Prometheus, на все 3 VM установил: Node Exporter и другой нужный мне софт
+Через [ansible](https://github.com/Serg2211/devops-netology/blob/main/dz/10-monitoring-02-grafana/infrastructure/site.yml) установил на grafana-server: Grafana и Prometheus, на все 3 VM установил: Node Exporter и другой нужный мне софт
 
 ```bash
 sergo@ubuntu-pc:~/10.2/infrastructure$ ansible-playbook -i ./inventory/cicd/hosts.yml site.yml
