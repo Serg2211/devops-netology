@@ -68,8 +68,8 @@ root@ubuntu-pc:/home/sergo/help#
   style="display: inline-block; margin: 0 auto; max-width: 600px">
 
 <img
-  src="https://github.com/Serg2211/devops-netology/blob/main/dz/10-monitoring-03-elk/images/4.png"
-  alt="image 4.png"
-  title="image 4.png"
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/10-monitoring-03-elk/images/5.png"
+  alt="image 5.png"
+  title="image 5.png"
   style="display: inline-block; margin: 0 auto; max-width: 600px">
 ---
