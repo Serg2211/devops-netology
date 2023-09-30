@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+spec:
+  selector:
+    app: multitool
+  ports:
+  - name: for-multitool
+    port: 80
+    targetPort: 80
