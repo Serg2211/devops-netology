@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: pod-multitool
+  name: pod-multitool
+  namespace: default
+spec:
+  containers:
+  - name: multitool
+    image: wbitt/network-multitool:latest
+    ports:
+      - containerPort: 8090
+        name: multitool-port
