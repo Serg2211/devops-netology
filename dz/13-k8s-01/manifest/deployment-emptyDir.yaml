@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-emptydir
+  labels:
+    app: dep-empty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dep-empty
+  template:
+    metadata:
+      labels:
+        app: dep-empty
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ['sh', '-c', 'while true; do echo Hello world! >> /output/output.txt; sleep 5; done']
+        volumeMounts:
+        - name: emptydir-volume
+          mountPath: /output
+      - name: multitool
+        image: wbitt/network-multitool:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: HTTP_PORT
+          value: "80"
+        volumeMounts:
+        - name: emptydir-volume
+          mountPath: /input
+      volumes:
+      - name: emptydir-volume
+        emptyDir: {}

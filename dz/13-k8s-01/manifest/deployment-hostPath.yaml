@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: deployment-hostpath
+  labels:
+    app: dep-hostpath
+spec:
+  selector:
+    matchLabels:
+      app: dep-hostpath
+  template:
+    metadata:
+      labels:
+        app: dep-hostpath
+    spec:
+      containers:
+      - name: multitool
+        image: wbitt/network-multitool
+        volumeMounts:
+        - name: logs
+          mountPath: /input/logs
+        ports:
+        - containerPort: 80
+      volumes:
+      - name: logs
+        hostPath:
+          path: /var/log/syslog
