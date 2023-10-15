@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-nfs
+  labels:
+    app: dep-nfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dep-nfs
+  template:
+    metadata:
+      labels:
+        app: dep-nfs
+    spec:
+      containers:
+      - name: multitool
+        image: wbitt/network-multitool:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: HTTP_PORT
+          value: "80"
+        volumeMounts:
+        - name: pv-nfs
+          mountPath: /input
+      volumes:
+      - name: pv-nfs
+        persistentVolumeClaim:
+          claimName: pvc-nfs
