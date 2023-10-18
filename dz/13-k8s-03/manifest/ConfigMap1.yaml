@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap1
+data:
+  multitool_port: "8080"
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+      <meta charset="UTF-8"
+      <title>Тест ConfigMap для Nginx</title>
+    </head>
+    <body>
+      <h1>ConfigMap для Nginx работает!</h1>
+    </body>
+    </html>
