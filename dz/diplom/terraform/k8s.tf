@@ -1,6 +1,6 @@
 #считываем данные об образе ОС
 data "yandex_compute_image" "ubuntu-2204-lts" {
-  family = "ubuntu-2204-lts"
+  image_id = "fd8hnnsnfn3v88bk0k1o"
 }
 
 #создаем master node

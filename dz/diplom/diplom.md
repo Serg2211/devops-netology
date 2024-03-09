@@ -923,8 +923,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      YC_ACCESS_KEY: ${{ secrets.YC_ACCESS_KEY }}
-      YC_SECRET_KEY: ${{ secrets.YC_SECRET_KEY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.YC_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.YC_SECRET_KEY }}
       YC_TOKEN: ${{ secrets.YC_TOKEN }}
       ID_RSA: ${{ secrets.ID_RSA }}
       JENK_RSA: ${{ secrets.JENK_RSA }}

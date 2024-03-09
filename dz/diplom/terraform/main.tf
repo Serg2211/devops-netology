@@ -55,13 +55,15 @@ resource "yandex_storage_bucket" "diplom-bucket" {
   bucket     = "diplom-bucket"
   access_key = yandex_iam_service_account_static_access_key.bucket-static_access_key.access_key
   secret_key = yandex_iam_service_account_static_access_key.bucket-static_access_key.secret_key
-  force_destroy = true
+  default_storage_class = "STANDARD"
+  acl           = "public-read"
+  force_destroy = "true"
 
   anonymous_access_flags {
-    read = false
-    list = false
+    read = true
+    list = true
+    config_read = true
   }
-
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -88,13 +90,12 @@ EOT
   filename = "./backend.key"
 }
 
-// Add "backendConf" to bucket
-resource "yandex_storage_object" "object-1" {
+resource "yandex_storage_object" "object-2" {
     access_key = yandex_iam_service_account_static_access_key.bucket-static_access_key.access_key
     secret_key = yandex_iam_service_account_static_access_key.bucket-static_access_key.secret_key
     bucket = yandex_storage_bucket.diplom-bucket.bucket
-    key = "terraform/terraform.tfstate"
-    source = "./backend.key"
+    key = "terraform.tfstate"
+    source = "./terraform.tfstate"
     acl    = "private"
     depends_on = [local_file.backendConf]
 }
