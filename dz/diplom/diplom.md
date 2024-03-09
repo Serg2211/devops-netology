@@ -889,3 +889,162 @@ sergo / 81837997
 [app_repo](https://github.com/Serg2211/app.git)
 
 [DockerHub](https://hub.docker.com/repository/docker/sergo2211/app/general)
+
+## Доработка
+
+Если на первом этапе вы не воспользовались Terraform Cloud, то задеплойте и настройте в кластере atlantis для отслеживания изменений инфраструктуры. Альтернативный вариант 3 задания: вместо Terraform Cloud или atlantis настройте на автоматический запуск и применение конфигурации terraform из вашего git-репозитория в выбранной вами CI-CD системе при любом комите в main ветку. Предоставьте скриншоты работы пайплайна из CI/CD системы.
+
+Создал отдельный [git-репозиторий](https://github.com/Serg2211/CI-CD) 
+
+[All workflows](https://github.com/Serg2211/CI-CD/actions)
+
+Все необходимые secrets добавил в Actions secrets and variables
+
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/diplom/images/18.png"
+  alt="image 18.png"
+  title="image 18.png"
+  style="display: inline-block; margin: 0 auto; max-width: 600px">
+
+
+Как и договаривались сделал только terraform plan
+
+```yaml
+name: Terraform
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+
+    env:
+      YC_ACCESS_KEY: ${{ secrets.YC_ACCESS_KEY }}
+      YC_SECRET_KEY: ${{ secrets.YC_SECRET_KEY }}
+      YC_TOKEN: ${{ secrets.YC_TOKEN }}
+      ID_RSA: ${{ secrets.ID_RSA }}
+      JENK_RSA: ${{ secrets.JENK_RSA }}
+      working-directory: .
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Save Ubuntu Public key to file for terraform
+        run: echo $ID_RSA > id_rsa.pub
+
+      - name: Save Jenkins SSH Public key to file for terraform
+        run: echo $JENK_RSA > jenk.pub
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.2
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan
+```
+
+
+```bash
+sergo@ubuntu-pc:~/Work/diplom/CI-CD$ git commit -m "commit 19"
+[main a6b72b8] commit 19
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+sergo@ubuntu-pc:~/Work/diplom/CI-CD$ git push -u origin main
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 289 bytes | 289.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To github.com:Serg2211/CI-CD.git
+   b00866d..a6b72b8  main -> main
+Branch 'main' set up to track remote branch 'main' from 'origin'.
+sergo@ubuntu-pc:~/Work/diplom/CI-CD$ 
+```
+
+<img
+  src="https://github.com/Serg2211/devops-netology/blob/main/dz/diplom/images/19.png"
+  alt="image 19.png"
+  title="image 19.png"
+  style="display: inline-block; margin: 0 auto; max-width: 600px">
+
+
+terraform plan никаких изменений в инфраструктуре не увидел. Прделагает только создать локальный файл с настройками подключения к Backend
+
+<details><summary>Вывод terraform plan</summary>
+
+```bash
+Run terraform plan
+/home/runner/work/_temp/0d1c2f5d-8625-4116-bbd5-bd50de655c56/terraform-bin plan
+data.template_file.cloudinit: Reading...
+data.template_file.cloudinit: Read complete after 0s [id=04410c3a8b24d1b46f102994c4b693bf3c1fd5bc91afd60e510603073726d620]
+data.yandex_compute_image.ubuntu-2204-lts: Reading...
+yandex_vpc_network.network: Refreshing state... [id=enprqggd2v1paql9u4av]
+yandex_iam_service_account.sergo-diplom: Refreshing state... [id=ajem9pfe02d88phcpia8]
+yandex_kms_symmetric_key.key-a: Refreshing state... [id=abjsudgf0vnucbqqq7hp]
+data.yandex_compute_image.ubuntu-2204-lts: Read complete after 3s [id=fd8hnnsnfn3v88bk0k1o]
+yandex_resourcemanager_folder_iam_binding.encrypterDecrypter: Refreshing state... [id=b1gjsnlha3fii86tav22/kms.keys.encrypterDecrypter]
+yandex_resourcemanager_folder_iam_binding.editor: Refreshing state... [id=b1gjsnlha3fii86tav22/editor]
+yandex_iam_service_account_static_access_key.bucket-static_access_key: Refreshing state... [id=aje0lnhkjcqv9hkls5eo]
+yandex_resourcemanager_folder_iam_binding.storage-admin: Refreshing state... [id=b1gjsnlha3fii86tav22/storage.admin]
+yandex_storage_bucket.diplom-bucket: Refreshing state... [id=diplom-bucket]
+yandex_vpc_subnet.subnet-2: Refreshing state... [id=e9baoaavr842usqpp4l9]
+yandex_vpc_subnet.subnet-zones[1]: Refreshing state... [id=e2lpt5etkg6epbe5pa69]
+yandex_vpc_subnet.subnet-zones[0]: Refreshing state... [id=e2laki7n2o25m09e7gmk]
+yandex_compute_instance.jenkins: Refreshing state... [id=fhmokaokg1hophs0ah1k]
+yandex_compute_instance.master-node: Refreshing state... [id=fhm1kqra63sj68r2rgte]
+yandex_compute_instance.worker-nodes[0]: Refreshing state... [id=epdm73fldgskb4rcg322]
+yandex_compute_instance.worker-nodes[1]: Refreshing state... [id=epdf69btc59e2ddb8cn5]
+local_file.backendConf: Refreshing state... [id=b451e10b3b429138bed44ac0de20387ac785b76d]
+yandex_storage_object.object-1: Refreshing state... [id=terraform/terraform.tfstate]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # local_file.backendConf will be created
+  + resource "local_file" "backendConf" {
+      + content              = (sensitive value)
+      + content_base64sha256 = (known after apply)
+      + content_base64sha512 = (known after apply)
+      + content_md5          = (known after apply)
+      + content_sha1         = (known after apply)
+      + content_sha256       = (known after apply)
+      + content_sha512       = (known after apply)
+      + directory_permission = "0777"
+      + file_permission      = "0777"
+      + filename             = "./backend.key"
+      + id                   = (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.
+
+Warning: The `set-output` command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+
+Warning: The `set-output` command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+
+Warning: The `set-output` command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+```
+
+</details>
